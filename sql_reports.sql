@@ -1,55 +1,55 @@
 --jak zmienia się sprzedaż w czasie dla każdej kategorii
 
-SELECT
-    YEAR(f.order_date)  AS sales_year,
-    MONTH(f.order_date) AS sales_month,
+select
+    year(f.order_date)  as sales_year,
+    month(f.order_date) as sales_month,
     p.category,
-    SUM(f.sales_amount) AS total_sales,
-    SUM(f.quantity)     AS total_quantity
-FROM gold.fact_sales f
-LEFT JOIN gold.dim_products p
-ON f.product_key = p.product_key
-GROUP BY
-    YEAR(f.order_date),
-    MONTH(f.order_date),
+    sum(f.sales_amount) as total_sales,
+    sum(f.quantity)     as total_quantity
+from gold.fact_sales f
+left join gold.dim_products p
+on f.product_key = p.product_key
+group by
+    year(f.order_date),
+    month(f.order_date),
     p.category
-ORDER BY
+order by
     sales_year,
     sales_month,
-    total_sales DESC;
+    total_sales desc;
 
---Top 10 klientów według wartości zakupów
-SELECT TOP 10
+--top 10 klientów według wartości zakupów
+select top 10
     c.customer_key,
     c.first_name,
     c.last_name,
     c.country,
-    SUM(f.sales_amount) AS total_sales,
-    COUNT(*)            AS number_of_orders
-FROM gold.fact_sales f
-LEFT JOIN gold.dim_customers c
-ON f.customer_key = c.customer_key
-GROUP BY
+    sum(f.sales_amount) as total_sales,
+    count(*)            as number_of_orders
+from gold.fact_sales f
+left join gold.dim_customers c
+on f.customer_key = c.customer_key
+group by
     c.customer_key,
     c.first_name,
     c.last_name,
     c.country
-ORDER BY
-    total_sales DESC;
+order by
+    total_sales desc;
 
 
---Sprzedaż według kraju i płci klienta
-SELECT
+--sprzedaż według kraju i płci klienta
+select
     c.country,
     c.gender,
-    SUM(f.sales_amount) AS total_sales,
-    SUM(f.quantity)     AS total_quantity,
-    COUNT(*)            AS number_of_orders
-FROM gold.fact_sales f
-LEFT JOIN gold.dim_customers c
-    ON f.customer_key = c.customer_key
-GROUP BY
+    sum(f.sales_amount) as total_sales,
+    sum(f.quantity)     as total_quantity,
+    count(*)            as number_of_orders
+from gold.fact_sales f
+left join gold.dim_customers c
+    on f.customer_key = c.customer_key
+group by
     c.country,
     c.gender
-ORDER BY
-    total_sales DESC;
+order by
+    total_sales desc;
